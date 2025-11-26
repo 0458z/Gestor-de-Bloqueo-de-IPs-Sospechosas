@@ -155,7 +155,7 @@
                         <div class="tarjeta">
                             <div class="texto-ip">${ip}</div>
                             <small style="color:#ef4444; font-weight:bold;">BLOQUEO ACTIVO</small>
-                            <button class="btn-desbloquear" onclick="desbloquearIp('${ip}')">🔓 Desbloquear</button>
+                            <button class="btn-desbloquear" onclick="desbloquearIp('${ip}')"> Desbloquear</button>
                         </div>`;
                 });
             } catch (error) { 
@@ -167,7 +167,7 @@
         async function bloquearManual() {
             const ip = document.getElementById('ipManual').value;
             // Solicito el token maestro por seguridad
-            const token = prompt("🔒 Seguridad: Ingrese Token Maestro", "ADMIN123");
+            const token = prompt(" Seguridad: Ingrese Token Maestro", "ADMIN123");
             
             if (token) {
                 await fetch(`${URL_API}/admin/bloquear`, {
@@ -184,7 +184,7 @@
         // Función para eliminar una IP de la lista negra
         async function desbloquearIp(ip) {
             // Solicito el token que debió llegar por Telegram o el maestro
-            const token = prompt("🔒 Seguridad: Ingrese Token de Desbloqueo", "ADMIN123");
+            const token = prompt(" Seguridad: Ingrese Token de Desbloqueo", "ADMIN123");
             
             if (token) {
                 await fetch(`${URL_API}/admin/desbloquear`, {
