@@ -60,6 +60,6 @@ setInterval(async () => {
 const servidor = new grpc.Server();
 servidor.addService(protoDecision.ServicioDecision.service, { DecidirBloqueo: decidirBloqueo });
 servidor.bindAsync('0.0.0.0:50051', grpc.ServerCredentials.createInsecure(), () => {
-    console.log('✅ Servidor 2 (Motor de Decisión) corriendo en puerto 50051');
+    console.log(' Servidor 2 (Motor de Decisión) corriendo en puerto 50051');
     servidor.start();
 });
