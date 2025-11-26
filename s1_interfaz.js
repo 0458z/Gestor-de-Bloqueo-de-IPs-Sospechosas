@@ -14,8 +14,8 @@ const PUERTO = 3001;
 
 // CREDENCIALES
 // Aquí coloqué mis datos reales de Telegram
-const TELEGRAM_TOKEN = '8524426178:AAGWkmHT4eW03cLjeqSCSwGlsggMfvSpDhE'; 
-const TELEGRAM_CHAT_ID = '5268491936'; 
+const TELEGRAM_TOKEN = 'AQUI SE INGRESA EL TOKEN GENERADO POR EL BOT FATHER'; 
+const TELEGRAM_CHAT_ID = 'CHAT ID CONSULTADO EN hhts://telegram-TELEGRAM_TOKEN'; 
 
 app.use(express.json());
 app.use(cors());
