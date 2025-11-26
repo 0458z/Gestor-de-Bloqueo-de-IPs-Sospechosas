@@ -123,14 +123,14 @@
                 const respuesta = await peticion.json();
 
                 if (respuesta.bloqueado) {
-                    registro.innerHTML = `⛔ <b>BLOQUEADO</b><br>${respuesta.razon}`;
+                    registro.innerHTML = ` <b>BLOQUEADO</b><br>${respuesta.razon}`;
                     registro.style.color = "#ff4444"; // Rojo
                 } else {
-                    registro.innerHTML = `✅ <b>PERMITIDO</b><br>Tráfico normal`;
+                    registro.innerHTML = ` <b>PERMITIDO</b><br>Tráfico normal`;
                     registro.style.color = "#00cc00"; // Verde
                 }
             } catch (error) { 
-                registro.innerHTML = "❌ <b>ERROR DE CONEXIÓN</b><br>¿Está encendido el servidor?"; 
+                registro.innerHTML = " <b>ERROR DE CONEXIÓN</b><br>¿Está encendido el servidor?"; 
                 registro.style.color = "orange";
                 console.error(error);
             }
