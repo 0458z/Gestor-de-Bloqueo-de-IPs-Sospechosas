@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel de Administración</title>
+    <style>
+        /* Configuración base del cuerpo */
+        body { 
+            background-color: #0f172a; 
+            color: #cbd5e1; 
+            font-family: 'Segoe UI', sans-serif; 
+            padding: 40px; 
+        }
+
+        /* Encabezado con título y botón de refresco */
+        header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-bottom: 1px solid #334155; 
+            padding-bottom: 20px; 
+            margin-bottom: 30px; 
+        }
+
+        /* Panel para bloqueo manual */
+        .panel-control { 
+            background-color: #1e293b; 
+            padding: 20px; 
+            border-radius: 12px; 
+            border: 1px solid #334155; 
+            display: flex; 
+            gap: 15px; 
+            align-items: end; 
+            margin-bottom: 40px; 
+        }
+
+        .grupo-input { flex-grow: 1; }
+        
+        label { 
+            display: block; 
+            margin-bottom: 8px; 
+            font-weight: bold; 
+            color: #94a3b8; 
+        }
+
+        input { 
+            width: 100%; 
+            padding: 12px; 
+            background-color: #0f172a; 
+            border: 1px solid #475569; 
+            color: white; 
+            border-radius: 6px; 
+            box-sizing: border-box; /* Asegura que el padding no rompa el ancho */
+        }
+
+        /* Botones personalizados */
+        .btn-rojo { 
+            background-color: #ef4444; 
+            color: white; 
+            border: none; 
+            padding: 12px 25px; 
+            border-radius: 6px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            height: 42px; /* Alineación con el input */
+        }
+
+        .btn-azul { 
+            background-color: #38bdf8; 
+            color: #0f172a; 
+            border: none; 
+            padding: 8px 16px; 
+            border-radius: 6px; 
+            font-weight: bold; 
+            cursor: pointer; 
+        }
+
+        /* Grid para mostrar las tarjetas de IPs */
+        .cuadricula { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+            gap: 20px; 
+        }
+
+        .tarjeta { 
+            background-color: #1e293b; 
+            padding: 20px; 
+            border-radius: 10px; 
+            border-left: 5px solid #ef4444; 
+        }
+
+        .texto-ip { 
+            font-size: 1.5rem; 
+            font-weight: bold; 
+            color: #fff; 
+            font-family: monospace; 
+            margin-bottom: 5px; 
+        }
+
+        .btn-desbloquear { 
+            background-color: transparent; 
+            border: 1px solid #64748b; 
+            color: #94a3b8; 
+            width: 100%; 
+            padding: 8px; 
+            margin-top: 15px; 
+            cursor: pointer; 
+            border-radius: 5px; 
+            transition: 0.2s;
+        }
+
+        .btn-desbloquear:hover { 
+            border-color: #38bdf8; 
+            color: #38bdf8; 
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🛡️ Gestión de Firewall</h1>
+        <button class="btn-azul" onclick="cargarLista()">↻ Actualizar Lista</button>
+    </header>
+
+    <div class="panel-control">
+        <div class="grupo-input">
+            <label>Bloqueo Manual de IP</label>
+            <input type="text" id="ipManual" placeholder="Ej: 45.33.22.11">
+        </div>
+        <button class="btn-rojo" onclick="bloquearManual()">BLOQUEAR AHORA</button>
+    </div>
+
+    <div id="cuadricula" class="cuadricula"></div>
+
+    <script>
+        const URL_API = "https://localhost:3001";
+
+        // Función para obtener la lista de IPs desde el servidor y dibujarla
+        async function cargarLista() {
+            const contenedor = document.getElementById('cuadricula');
+            try {
+                // Solicito la lista al backend (que a su vez consulta a S3)
+                const peticion = await fetch(`${URL_API}/admin/lista`);
+                const listaIps = await peticion.json();
+                
+                contenedor.innerHTML = ''; // Limpio el contenido anterior
+                
+                if (listaIps.length === 0) { 
+                    contenedor.innerHTML = '<p style="color:#22c55e">Sistema limpio. No hay amenazas activas.</p>'; 
+                    return; 
+                }
+                
+                // Itero sobre cada IP para crear su tarjeta visual
+                listaIps.forEach(ip => {
+                    contenedor.innerHTML += `
+                        <div class="tarjeta">
+                            <div class="texto-ip">${ip}</div>
+                            <small style="color:#ef4444; font-weight:bold;">BLOQUEO ACTIVO</small>
+                            <button class="btn-desbloquear" onclick="desbloquearIp('${ip}')">🔓 Desbloquear</button>
+                        </div>`;
+                });
+            } catch (error) { 
+                contenedor.innerHTML = '<p>Error de conexión con el servidor.</p>'; 
+            }
+        }
+
+        // Función para enviar una orden de bloqueo manual
+        async function bloquearManual() {
+            const ip = document.getElementById('ipManual').value;
+            // Solicito el token maestro por seguridad
+            const token = prompt("🔒 Seguridad: Ingrese Token Maestro", "ADMIN123");
+            
+            if (token) {
+                await fetch(`${URL_API}/admin/bloquear`, {
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ip, token })
+                });
+                // Limpio el campo y recargo la lista para ver el cambio
+                document.getElementById('ipManual').value = "";
+                cargarLista();
+            }
+        }
+
+        // Función para eliminar una IP de la lista negra
+        async function desbloquearIp(ip) {
+            // Solicito el token que debió llegar por Telegram o el maestro
+            const token = prompt("🔒 Seguridad: Ingrese Token de Desbloqueo", "ADMIN123");
+            
+            if (token) {
+                await fetch(`${URL_API}/admin/desbloquear`, {
+                    method: 'DELETE', 
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ip, token })
+                });
+                cargarLista(); // Actualizo la vista
+            }
+        }
+
+        // Ejecuto la carga inicial al abrir la página
+        cargarLista();
+    </script>
+</body>
+</html>

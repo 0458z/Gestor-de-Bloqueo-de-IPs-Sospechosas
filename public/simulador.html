@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Simulador de Tráfico</title>
+    <style>
+        body { 
+            background-color: #0f172a; /* Fondo oscuro azulado */
+            color: #ffffff; 
+            font-family: sans-serif; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+        }
+        
+        .panel { 
+            background-color: #1e293b; 
+            padding: 40px; 
+            border-radius: 20px; 
+            width: 350px; 
+            text-align: center; 
+            border: 1px solid #334155; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
+        h2 { color: #38bdf8; text-transform: uppercase; margin-top: 0; }
+
+        label { 
+            display: block; 
+            text-align: left; 
+            margin-top: 15px; 
+            color: #ccc; 
+            font-size: 0.9rem;
+        }
+
+        /* CORRECCIÓN: Inputs blancos para que se vean bien */
+        input, select { 
+            width: 100%; 
+            padding: 12px; 
+            margin-top: 5px; 
+            background-color: #ffffff; /* Fondo BLANCO */
+            color: #000000;            /* Texto NEGRO */
+            border: 2px solid #38bdf8; /* Borde Azul */
+            border-radius: 8px; 
+            box-sizing: border-box; 
+            font-size: 1rem; 
+            font-weight: bold;
+        }
+
+        /* Efecto al hacer clic en el campo */
+        input:focus, select:focus {
+            outline: none;
+            box-shadow: 0 0 10px #38bdf8;
+        }
+
+        button { 
+            width: 100%; 
+            padding: 15px; 
+            margin-top: 25px; 
+            background-color: #ef4444; 
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 1.1rem; 
+            font-weight: bold; 
+            cursor: pointer; 
+        }
+        button:hover { background-color: #dc2626; }
+
+        .consola { 
+            margin-top: 20px; 
+            background-color: #000; 
+            padding: 15px; 
+            border-radius: 8px; 
+            font-family: monospace; 
+            text-align: left; 
+            border-left: 5px solid #555;
+            min-height: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="panel">
+        <h2>⚔️ Generador de Tráfico</h2>
+        
+        <label>Dirección IP Origen:</label>
+        <input type="text" id="ip" value="10.0.0.55" placeholder="Ej: 192.168.1.1">
+        
+        <label>Tipo de Ataque:</label>
+        <select id="servicio">
+            <option value="WEB">Login Web (HTTP)</option>
+            <option value="SSH">Servidor (SSH Puerto 22)</option>
+        </select>
+
+        <label>Intentos Fallidos:</label>
+        <input type="number" id="intentos" value="4">
+
+        <button onclick="ejecutarSimulacion()">Lanzar Ataque</button>
+
+        <div id="registro" class="consola">Esperando orden...</div>
+    </div>
+
+    <script>
+        async function ejecutarSimulacion() {
+            const ip = document.getElementById('ip').value;
+            const intentos = parseInt(document.getElementById('intentos').value);
+            const servicio = document.getElementById('servicio').value;
+            const registro = document.getElementById('registro');
+
+            registro.innerHTML = "📡 Enviando datos...";
+            registro.style.color = "yellow";
+
+            try {
+                // IMPORTANTE: Asegúrate de que la URL es correcta
+                const peticion = await fetch('https://localhost:3001/reportar-fallo', {
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ip, intentos, servicio })
+                });
+                
+                const respuesta = await peticion.json();
+
+                if (respuesta.bloqueado) {
+                    registro.innerHTML = `⛔ <b>BLOQUEADO</b><br>${respuesta.razon}`;
+                    registro.style.color = "#ff4444"; // Rojo
+                } else {
+                    registro.innerHTML = `✅ <b>PERMITIDO</b><br>Tráfico normal`;
+                    registro.style.color = "#00cc00"; // Verde
+                }
+            } catch (error) { 
+                registro.innerHTML = "❌ <b>ERROR DE CONEXIÓN</b><br>¿Está encendido el servidor?"; 
+                registro.style.color = "orange";
+                console.error(error);
+            }
+        }
+    </script>
+</body>
+</html>

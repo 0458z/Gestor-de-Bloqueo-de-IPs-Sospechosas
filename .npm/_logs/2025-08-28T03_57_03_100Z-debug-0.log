@@ -1,0 +1,24 @@
+0 verbose cli /usr/bin/node /usr/bin/npm
+1 info using npm@11.5.1
+2 info using node@v24.6.0
+3 silly config load:file:/usr/lib/node_modules/npm/npmrc
+4 silly config load:file:/root/.npmrc
+5 silly config load:file:/usr/etc/npmrc
+6 verbose title npm list
+7 verbose argv "list" "--global" "--depth" "0"
+8 verbose logfile logs-max:10 dir:/root/.npm/_logs/2025-08-28T03_57_03_100Z-
+9 verbose logfile /root/.npm/_logs/2025-08-28T03_57_03_100Z-debug-0.log
+10 silly packumentCache heap:1970536448 maxSize:492634112 maxEntrySize:246317056
+11 silly logfile done cleaning log files
+12 http fetch GET 200 https://registry.npmjs.org/npm 1020ms
+13 verbose cwd /home/zeta
+14 verbose os Linux 6.12.41+deb13-amd64
+15 verbose node v24.6.0
+16 verbose npm  v11.5.1
+17 notice
+17 notice New [36mpatch[39m version of npm available! [36m11.5.1[39m -> [34m11.5.2[39m
+17 notice Changelog: [34mhttps://github.com/npm/cli/releases/tag/v11.5.2[39m
+17 notice To update run: [4mnpm install -g npm@11.5.2[24m
+17 notice  { force: true, Symbol(proc-log.meta): true }
+18 verbose exit 0
+19 info ok

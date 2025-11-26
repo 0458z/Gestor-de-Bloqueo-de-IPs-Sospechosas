@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+// Definí el servicio que usará el motor de decisión
+service ServicioDecision {
+  rpc DecidirBloqueo (SolicitudBloqueo) returns (RespuestaBloqueo) {}
+}
+
+// Este mensaje lo envío desde la interfaz (S1) hacia el motor (S2)
+message SolicitudBloqueo {
+  string direccion_ip = 1;
+  int32 intentos = 2;
+  string tipo_servicio = 3; // Agregué esto para diferenciar SSH de WEB
+}
+
+// Esta es la respuesta que espero recibir del motor de decisión
+message RespuestaBloqueo {
+  bool debe_bloquear = 1;
+  string razon = 2;
+}
