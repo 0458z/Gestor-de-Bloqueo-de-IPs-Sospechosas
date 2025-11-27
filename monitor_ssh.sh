@@ -18,7 +18,7 @@ tail -Fn0 "$LOG_FILE" | while read line ; do
         # Usamos expresiones regulares para extraer solo la IP de la línea de texto
         IP=$(echo "$line" | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b")
         
-        echo "🚨 Ataque detectado desde: $IP"
+        echo " Ataque detectado desde: $IP"
         
         # Enviamos la alerta a tu servidor Node.js
         # Enviamos '6' intentos para forzar el bloqueo inmediato y la alerta de Telegram
