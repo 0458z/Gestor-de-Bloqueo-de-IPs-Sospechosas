@@ -43,18 +43,18 @@ Prerrequisitos
 Instalación
 
 1.  **Clonar el repositorio:**
-    ```bash
+    
     git clone [https://github.com/0458z/Gestor-de-Bloqueo-de-IPs-Sospechosas.git](https://github.com/0458z/Gestor-de-Bloqueo-de-IPs-Sospechosas.git)
     cd Gestor-de-Bloqueo-de-IPs-Sospechosas
     ```
 
 2.  **Instalar dependencias:**
-    ```bash
+    
     npm install
-    ```
+    
 
 3.  **Generar certificados SSL (Obligatorio para S1):**
-    ```bash
+    ```
     openssl req -nodes -new -x509 -keyout server.key -out server.cert
     ```
     *(Presiona Enter a todas las preguntas)*.
@@ -64,16 +64,15 @@ Ejecución
 Para que el sistema funcione correctamente, se deben iniciar los servidores en el siguiente orden estricto. Se recomienda usar 3 terminales distintas.
 
 **Terminal 1 (Base de Datos):**
-```bash
+
 node s3_almacenamiento.js
 Terminal 2 (Motor de Decisión):
 
-Bash
+
 
 node s2_motor.js
 Terminal 3 (Interfaz y Firewall): Nota: Requiere sudo si deseas que el bloqueo de iptables funcione realmente.
 
-Bash
 
 sudo node s1_interfaz.js
  Uso del Sistema
